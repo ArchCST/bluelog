@@ -17,6 +17,7 @@ flask-bootstrap = "*"
 flask-ckeditor = "*"
 flask-wtf = "*"
 flask-moment = "*"
+jedi = "*"
 
 [requires]
 python_version = "3.7"
