@@ -4,9 +4,19 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+watchdog = "*"
+faker = "*"
 
 [packages]
 flask = "*"
+python-dotenv = "*"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
+flask-mail = "*"
+flask-bootstrap = "*"
+flask-ckeditor = "*"
+flask-wtf = "*"
+flask-moment = "*"
 
 [requires]
 python_version = "3.7"
