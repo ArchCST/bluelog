@@ -18,6 +18,7 @@ flask-ckeditor = "*"
 flask-wtf = "*"
 flask-moment = "*"
 jedi = "*"
+faker = "*"
 
 [requires]
 python_version = "3.7"

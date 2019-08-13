@@ -14,6 +14,7 @@ from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
 from bluelog.extensions import bootstrap, db, moment, ckeditor, mail
+from bluelog.models import Admin, Category, Link
 from bluelog.settings import config
 
 
@@ -59,7 +60,12 @@ def register_shell_context(app):
 
 
 def register_templates_context(app):
-    pass
+    @app.context_processor
+    def make_templates_context():
+        admin = Admin.query.first()
+        categories = Category.query.order_by(Category.name).all()
+        links = Link.query.order_by(Link.name).all()
+        return dict(admin=admin, categories=categories, links=links)
 
 
 def register_errors(app):
@@ -94,7 +100,7 @@ def register_commands(app):
     @click.option('--comment', default=500, help='Quantity of comments, default is 500.')
     def forge(category, post, comment):
         """Generates the fake categories, post, and comments"""
-        from bluelog.fakes import fake_admin, fake_categories, fake_posts, fake_comments
+        from bluelog.fakes import fake_admin, fake_categories, fake_posts, fake_comments, fake_links
 
         db.drop_all()
         db.create_all()
@@ -108,7 +114,10 @@ def register_commands(app):
         click.echo('Generating {} posts...'.format(post))
         fake_posts()
 
-        click.echo('Generating {} comments'.format(comment))
+        click.echo('Generating {} comments...'.format(comment))
         fake_posts()
+
+        click.echo('Generating links...')
+        fake_links()
 
         click.echo('Done.')

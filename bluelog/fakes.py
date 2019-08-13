@@ -10,8 +10,8 @@ import random
 from faker import Faker
 from sqlalchemy.exc import IntegrityError
 
-from bluelog.models import Admin, Category, Post, Comment
 from bluelog.extensions import db
+from bluelog.models import Admin, Category, Post, Comment, Link
 
 fake = Faker()
 
@@ -19,10 +19,10 @@ fake = Faker()
 def fake_admin():
     admin = Admin(
         username = 'azureb4',
-        blog_title = 'My Flask Blog',
-        blog_sub_title = 'It\'s a test blog',
+        blog_title = 'Title',
+        blog_sub_title = 'sub title \n if return',
         name = 'Bruce Chen',
-        about = 'I hate Jessica Xu :)'
+        about = 'I hate this shit :)'
     )
     db.session.add(admin)
     db.session.commit()
@@ -108,4 +108,13 @@ def fake_comments(count=500):
             post=Post.query.get(random.randint(1, Post.query.count()))
         )
         db.session.add(comment)
+    db.session.commit()
+
+
+def fake_links():
+    twitter = Link(name='Twitter', url='#')
+    facebook = Link(name='Facebook', url='#')
+    linkedin = Link(name='LinkedIn', url='#')
+    github = Link(name='Github', url='#')
+    db.session.add_all([twitter, facebook, linkedin, github])
     db.session.commit()

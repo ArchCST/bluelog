@@ -64,3 +64,9 @@ class Comment(db.Model):
     replied = db.relationship('Comment',
                               back_populates='replies',
                               remote_side=[id])
+
+
+class Link(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30))
+    url = db.Column(db.String(255))

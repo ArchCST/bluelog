@@ -5,7 +5,9 @@
     :copyright: © 2019 ArchCST <cst@crystl.cc>
     :license: MIT, see LICENSE for more details.
 """
-from flask import Blueprint
+from flask import Blueprint, render_template
+
+from bluelog.forms import LoginForm
 
 auth_bp = Blueprint('auth', __name__)
 
