@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% from 'bootstrap/pagination.html' import render_pager %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
 
 {% block title %}Home{% endblock %}
 
@@ -26,6 +27,9 @@
                         <hr>
                     {% endif %}
                 {% endfor %}
+                <div class="page-footer">
+                    {{ render_pagination(pagination) }}
+                </div>
             {% else %}
                 <div class="tip">
                     <h5>No posts yet.</h5>

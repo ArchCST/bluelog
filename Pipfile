@@ -13,12 +13,13 @@ python-dotenv = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
 flask-mail = "*"
-flask-bootstrap = "*"
 flask-ckeditor = "*"
 flask-wtf = "*"
 flask-moment = "*"
 jedi = "*"
 faker = "*"
+python-language-server = {extras = ["all"],version = "*"}
+bootstrap-flask = "*"
 
 [requires]
 python_version = "3.7"
