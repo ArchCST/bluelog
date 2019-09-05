@@ -24,6 +24,7 @@ def fake_admin():
         name = 'Bruce Chen',
         about = 'I hate this shit :)'
     )
+    admin.set_password('asdqwe123')
     db.session.add(admin)
     db.session.commit()
 
@@ -65,7 +66,6 @@ def fake_comments(count=500):
             post=Post.query.get(random.randint(1, Post.query.count()))
         )
         db.session.add(comment)
-    db.session.commit()
 
     salt = int(count * 0.1)
     for i in range(salt):
@@ -79,7 +79,7 @@ def fake_comments(count=500):
             reviewed=False,
             post=Post.query.get(random.randint(1, Post.query.count()))
         )
-        db.session.add(commet)
+        db.session.add(comment)
 
         # 管理员的评论
         comment = Comment(
@@ -92,8 +92,9 @@ def fake_comments(count=500):
             from_admin=True,
             post=Post.query.get(random.randint(1, Post.query.count()))
         )
-        db.session.add(commet)
+        db.session.add(comment)
     db.session.commit()
+
     # 回复
     for i in range(salt):
         comment = Comment(

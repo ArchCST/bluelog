@@ -9,12 +9,14 @@ import os
 
 import click
 from flask import Flask, render_template
+from flask_login import current_user
+from flask_wtf.csrf import CSRFError
 
 from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
-from bluelog.extensions import bootstrap, db, moment, ckeditor, mail
-from bluelog.models import Admin, Category, Link
+from bluelog.extensions import bootstrap, db, moment, ckeditor, mail, login_manager, csrf
+from bluelog.models import Admin, Category, Link, Comment
 from bluelog.settings import config
 
 
@@ -42,9 +44,11 @@ def register_logging(app):
 def register_extensions(app):
     bootstrap.init_app(app)
     db.init_app(app)
+    login_manager.init_app(app)
     moment.init_app(app)
     ckeditor.init_app(app)
     mail.init_app(app)
+    csrf.init_app(app)
 
 
 def register_blueprints(app):
@@ -65,7 +69,11 @@ def register_templates_context(app):
         admin = Admin.query.first()
         categories = Category.query.order_by(Category.name).all()
         links = Link.query.order_by(Link.name).all()
-        return dict(admin=admin, categories=categories, links=links)
+        if current_user.is_authenticated:
+            unread_comments = Comment.query.filter_by(reviewed=False).count()
+        else:
+            unread_comments = None
+        return dict(admin=admin, categories=categories, links=links, unread_comments=unread_comments)
 
 
 def register_errors(app):
@@ -80,6 +88,10 @@ def register_errors(app):
     @app.errorhandler(500)
     def internal_server_error(e):
         return render_template('errors/500.html'), 500
+
+    @app.errorhandler(CSRFError)
+    def handle_csrf_error(e):
+        return render_template('errors/400.html', description=e.description), 400
 
 
 def register_commands(app):
@@ -115,9 +127,47 @@ def register_commands(app):
         fake_posts()
 
         click.echo('Generating {} comments...'.format(comment))
-        fake_posts()
+        fake_comments()
 
         click.echo('Generating links...')
         fake_links()
 
+        click.echo('Done.')
+
+    @app.cli.command()
+    @click.option('--username', prompt=True, help='The username used to login.')
+    @click.password_option()
+    # @click.option('--password', prompt=True, hide_input=True,
+    #               confirmation_prompt=True, help='The password used to login.')
+    def init(username, password):
+        '''Building Bluelog, just for you'''
+
+        click.echo('Initializing the database...')
+        db.create_all()
+
+        admin = Admin.query.first()
+        if admin:
+            click.echo('The admin already exists, updating...')
+            admin.username = username
+            admin.set_password(password)
+        else:
+            click.echo('Creating the temporary admin account...')
+            admin = Admin(
+                username=username,
+                blog_title='Bluelog',
+                blog_sub_title="No, I'm the real thing.",
+                name='Admin',
+                about='Anything about you.'
+            )
+
+            admin.set_password(password)
+            db.session.add(admin)
+
+        category = Category.query.first()
+        if category is None:
+            click.echo('Creating the default category...')
+            category = Category(name='Default')
+            db.session.add(category)
+
+        db.session.commit()
         click.echo('Done.')

@@ -32,8 +32,10 @@ class BaseConfig(object):
 
     BLUELOG_EMAIL = os.getenv('BLUELOG_EMAIL')
     BLUELOG_POST_PER_PAGE = 10
-    BLUE_MANAGE_POST_PER_PAGE = 15
+    BLUELOG_MANAGE_POST_PER_PAGE = 15
     BLUE_COMMENT_PER_PAGE = 15
+    # ('theme name', 'display name')
+    BLUELOG_THEMES = {'perfect_blue': 'Perfect Blue', 'darkly': 'Darkly', 'solar': 'Solar'}
 
 
 class DevelopmentConfig(BaseConfig):

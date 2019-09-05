@@ -20,6 +20,8 @@ jedi = "*"
 faker = "*"
 python-language-server = {extras = ["all"],version = "*"}
 bootstrap-flask = "*"
+unidecode = "*"
+flask-login = "*"
 
 [requires]
 python_version = "3.7"

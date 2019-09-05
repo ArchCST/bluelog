@@ -31,7 +31,7 @@ class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(1, 60)])
     category = SelectField('Category', coerce=int, default=1)
     body = CKEditorField('Body', validators=[DataRequired()])
-    submit = SubmitField('')
+    submit = SubmitField()
 
     def __init__(self, *args, **kwargs):
         super(PostForm, self).__init__(*args, **kwargs)
