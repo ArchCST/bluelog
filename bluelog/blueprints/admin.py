@@ -53,6 +53,17 @@ def new_post():
 @admin_bp.route('/post/<int:post_id>/edit', methods=['POST', 'GET'])
 def edit_post(post_id):
     form = PostForm()
+    post = Post.query.get_or_404(post_id)
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.body = form.body.data
+        post.category = Category.query.get(form.category.data)
+        db.session.commit()
+        flash('Post updated.', 'success')
+        return redirect(url_for('blog.show_post', post_id=post.id))
+    form.title.data = post.title
+    form.body.data = post.body
+    form.category.data = post.category_id
     return render_template('admin/edit_post.html', form=form)
 
 

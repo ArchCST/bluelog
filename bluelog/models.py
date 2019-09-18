@@ -49,6 +49,7 @@ class Post(db.Model):
 
     # 和 Comment 的关系，级联删除：post被删那么orphan(comments)也删除
     comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
+    can_comment = db.Column(db.Boolean, default=True)
 
 
 class Comment(db.Model):
